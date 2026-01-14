@@ -61,6 +61,11 @@ public class Main {
                 prodotti.get(7),
                 prodotti.get(2)
         );
+        List<Product> carrello2 = List.of(
+                prodotti.get(4),
+                prodotti.get(7),
+                prodotti.get(3)
+        );
 
         List<Product> carrelloBaby = List.of(
                 prodotti.get(2),
@@ -74,27 +79,59 @@ public class Main {
                 LocalDate.now().plusDays(3),
                 carrello1,
                 primoCliente);
-        
+
+        Order secondoOrdine = new Order(
+                "In lavorazione",
+                LocalDate.now(),
+                LocalDate.now().plusDays(10),
+                carrelloBaby,
+                clienti.get(2));
+
+        Order terzoOrdine = new Order(
+                "In ritardo",
+                LocalDate.now(),
+                LocalDate.now().plusDays(15),
+                carrello2,
+                clienti.get(6));
+
         System.out.println("PRIMO ORDINE:  " + primoOrdine);
+        System.out.println("SECONDO ORDINE:  " + secondoOrdine);
+
+        List<Order> ordini = new ArrayList<>();
+        ordini.add(primoOrdine);
+        ordini.add(secondoOrdine);
+        ordini.add(terzoOrdine);
 
         //1-Ottenere una lista di prodotti che appartengono alla categoria "Books" ed hanno un prezzo > 100
-        List<String> booksOver100 = prodotti.stream()
-                .filter(p -> p.getCategory().equalsIgnoreCase("Books"))
-                .filter(p -> p.getPrice() > 100)
-                .map(p -> (p.getName() + " " + " € " + p.getPrice()))
+        List<Product> booksOver100 = prodotti.stream()
+                .filter(p -> p.getCategory().equalsIgnoreCase("Books") && p.getPrice() > 100)
                 .toList();
+
         System.out.println("Lista di libri con prezzo superiore a 100: ");
         System.out.println(booksOver100);
 
-        //2-Ottenere una lista di ordini con prodotti che appartengono alla categoria "Baby"
+//        2-Ottenere una lista di ordini con prodotti che appartengono alla categoria "Baby"
+        List<Order> ordiniCategoriaBaby = ordini.stream()
+                .filter(o -> o.getProducts().stream()
+                        .anyMatch(p -> p.getCategory().equalsIgnoreCase("Baby")))
+                .toList();
+
+        System.out.println("ORDINI CATEGORIA BABY: " + ordiniCategoriaBaby);
 
         //3-Ottenere una lista di prodotti che appartengono alla gategoria "Boys" ed applicare il 10% di sconto
-        List<String> productsForBoys = prodotti.stream()
+        List<Product> productsForBoys = prodotti.stream()
                 .filter(p -> p.getCategory().equalsIgnoreCase("Boys"))
-                .map(p -> p.getName() + "Prezzo iniziale: " + p.getPrice() + " -Prezzo scontato: " + (p.getPrice() * 0.9))
+                .map(p -> new Product(
+                        p.getName(),
+                        p.getCategory(),
+                        p.getPrice() * 0.9
+
+                ))
                 .toList();
         System.out.println("Prodotti per bambini scontati del 10%: ");
         System.out.println(productsForBoys);
+
+        //4-
     }
 
 }
